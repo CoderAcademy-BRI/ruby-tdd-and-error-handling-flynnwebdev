@@ -10,24 +10,45 @@ class String
     end
 end
 
-def divide (dividend,divisor)
-    quotient = dividend/divisor
+class Counter
+    def initialize
+        @count = 0
+    end
+    def inc
+        @count += 1
+        @count
+    end
 end
 
+class NonIntegerError < StandardError
+end
+
+def divide (dividend,divisor)
+    raise NonIntegerError if !(dividend.is_i? && divisor.is_i?)
+    dividend.to_i / divisor.to_i
+end
+
+tries = Counter.new
 puts "--------------------"
 puts "--- Division App ---"
 puts "--------------------"
 begin
-    puts "Give me a number"
-    number1 = gets.chomp.to_i
-    puts "Give me another number"
-    number2 = gets.chomp.to_i
+    puts "Give me an integer"
+    number1 = gets.chomp
+    puts "Give me another integer"
+    number2 = gets.chomp
     answer = divide(number1,number2)
     print "#{number1} divided by #{number2} = "
     print "#{answer || "error"}"
     puts
-rescue
-    puts "Error occured"
+rescue ZeroDivisionError
+    puts "You cannot divide by zero!"
+    retry if tries.inc < 3
+rescue NonIntegerError
+    puts "You can only divide integers!"
+    retry if tries.inc < 3
+rescue StandardError => e
+    puts "An unexpected error occured: #{e.message}"
 end
 #
 # Code along challenge: if they hit an error, take them back to "give me a number"
